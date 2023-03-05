@@ -6,7 +6,7 @@ authors: [ JuanCruzBasso ]
 description: Hardcore with limited amount of lives
 website: jc.com.ar
 commands:
-  lives:
+  hcl:
     description: Manage users lives
 permissions:
   hardcorelives.*:
