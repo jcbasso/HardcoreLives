@@ -25,8 +25,9 @@ jobs:
 
       # It uses by default the tag name. See: https://github.com/marvinpinto/action-automatic-releases.
       - name: Automatic Release
-        uses: marvinpinto/action-automatic-releases@v1.2.1
-        repo_token: "${{ secrets.GITHUB_TOKEN }}"
-        prerelease: false
-        files: |
-          /build/libs/*.jar
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: false
+          files: |
+            ./build/libs/*.jar
