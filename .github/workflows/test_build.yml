@@ -7,7 +7,7 @@ on:
       - "*"
 
 jobs:
-  release:
+  test-build:
     runs-on: ubuntu-latest
 
     steps:
