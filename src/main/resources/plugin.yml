@@ -1,0 +1,21 @@
+name: HardcoreLives
+version: '${version}'
+main: me.jcbasso.hardcorelives.HardcoreLives
+api-version: 1.19
+authors: [ JuanCruzBasso ]
+description: Hardcore with limited amount of lives
+website: jc.com.ar
+commands:
+  lives:
+    description: Manage users lives
+permissions:
+  hardcorelives.*:
+    description: Gives access to all /lives commands
+    default: true
+    children:
+      hardcorelives.get: true
+      hardcorelives.set: true
+  hardcorelives.get:
+    description: Gives access to all /lives get command
+  hardcorelives.set:
+    description: Gives access to all /lives set command
