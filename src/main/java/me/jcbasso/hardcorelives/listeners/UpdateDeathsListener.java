@@ -44,7 +44,6 @@ public class UpdateDeathsListener implements Listener {
         world.strikeLightningEffect(player.getLocation());
 
         // Death sound
-        // TODO: Test it. Change sound to https://www.youtube.com/watch?v=lwpBOKlKBl0
         for (Player hearingPlayer : Bukkit.getOnlinePlayers()) {
             world.playSound(hearingPlayer.getLocation(), Sound.ENTITY_WITHER_DEATH, 1F, 1F);
         }
@@ -80,7 +79,6 @@ public class UpdateDeathsListener implements Listener {
         player.showTitle(title);
 
         // Respawn
-        // player.setBedSpawnLocation(playerLocation); // Make it revive on body. // TODO: Make it work
         player.setGameMode(GameMode.SPECTATOR);
     }
 }

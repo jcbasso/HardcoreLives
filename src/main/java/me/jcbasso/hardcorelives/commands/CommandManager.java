@@ -1,6 +1,7 @@
 package me.jcbasso.hardcorelives.commands;
 
 import me.jcbasso.hardcorelives.commands.subcommands.GetLivesCommand;
+import me.jcbasso.hardcorelives.commands.subcommands.ReviveCommand;
 import me.jcbasso.hardcorelives.commands.subcommands.SetLivesCommand;
 import me.jcbasso.hardcorelives.commands.subcommands.SubCommand;
 import me.jcbasso.hardcorelives.lives.LivesManager;
@@ -24,6 +25,7 @@ public class CommandManager implements CommandExecutor {
         subCommands = new HashMap<>();
         this.register(new SetLivesCommand(livesManager));
         this.register(new GetLivesCommand(livesManager));
+        this.register(new ReviveCommand(livesManager));
     }
 
     @Override

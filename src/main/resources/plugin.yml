@@ -10,12 +10,15 @@ commands:
     description: Manage users lives
 permissions:
   hardcorelives.*:
-    description: Gives access to all /lives commands
+    description: Gives access to all /hcl commands
     default: true
     children:
       hardcorelives.get: true
       hardcorelives.set: true
+      hardcorelives.revive: true
   hardcorelives.get:
-    description: Gives access to all /lives get command
+    description: Gives access to /hcl get command
   hardcorelives.set:
-    description: Gives access to all /lives set command
+    description: Gives access to /hcl set command
+  hardcorelives.revive:
+    description: Gives access to /hcl revive command
