@@ -3,7 +3,6 @@ plugins {
 }
 
 group = 'me.jcbasso'
-version = '1.0.0'
 
 
 dependencies {
