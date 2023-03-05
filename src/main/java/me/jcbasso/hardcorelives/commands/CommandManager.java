@@ -5,7 +5,8 @@ import me.jcbasso.hardcorelives.commands.subcommands.ReviveCommand;
 import me.jcbasso.hardcorelives.commands.subcommands.SetLivesCommand;
 import me.jcbasso.hardcorelives.commands.subcommands.SubCommand;
 import me.jcbasso.hardcorelives.lives.LivesManager;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -31,9 +32,14 @@ public class CommandManager implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("&" + ChatColor.GOLD.getChar() + "Options:");
+            Component options = Component.text("Opciones:", NamedTextColor.GOLD);
+            sender.sendMessage(options);
             for (String key : subCommands.keySet()) {
-                sender.sendMessage("&" + ChatColor.RED.getChar() + "/" + command.getName() + " " + subCommands.get(key).getSyntax() + "&" + ChatColor.GOLD.getChar() + " - " + subCommands.get(key).getDescription());
+                Component subcommand_options = Component.text()
+                        .append(Component.text("/" + command.getName() + " " + subCommands.get(key).getSyntax(), NamedTextColor.RED))
+                        .append(Component.text(" - " + subCommands.get(key).getDescription(), NamedTextColor.GOLD))
+                        .build();
+                sender.sendMessage(subcommand_options);
             }
             return true;
         }
@@ -49,7 +55,11 @@ public class CommandManager implements CommandExecutor {
 
     private boolean executeSubCommand(@NotNull CommandSender sender, @NotNull Command command, SubCommand subcommand, @NotNull String[] args) {
         if (subcommand.getPermission() != null && !sender.hasPermission(subcommand.getPermission())) {
-            sender.sendMessage("&" + ChatColor.GOLD.getChar() + "You don't have permission to execute " + "&" + ChatColor.RED.getChar() + "/" + command.getName() +  " " + subcommand.getKey());
+            Component permission_message = Component.text()
+                    .append(Component.text("No tienes permisos para ejecutar ", NamedTextColor.GOLD))
+                    .append(Component.text("/" + command.getName() + " " + subcommand.getKey(), NamedTextColor.RED))
+                    .build();
+            sender.sendMessage(permission_message);
             return false;
         }
 
