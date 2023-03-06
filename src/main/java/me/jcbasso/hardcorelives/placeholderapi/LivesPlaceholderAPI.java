@@ -45,6 +45,11 @@ public class LivesPlaceholderAPI extends PlaceholderExpansion {
         if (params.equals("lives")) {
             return livesManager.getLives(onlinePlayer).toString();
         }
+        
+        // %hardcorelives_lives_hearts%
+        if (params.equals("lives_hearts")) {
+            return (livesManager.getLives(onlinePlayer) * 2).toString();
+        }
 
         // %hardcorelives_starting_lives%
         if (params.equals("starting_lives")) {

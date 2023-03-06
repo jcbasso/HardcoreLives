@@ -35,5 +35,6 @@ Permissions nodes that can be set with a permission manager like LuckPerms.
 When using the PlaceholderAPI in conjunction with this plugin you will have the following placeholders at your disposal.
 
 - `%hardcorelives_lives%`: Player lives left.
+- `%hardcorelives_lives_hearts%`: Player lives left multiplied by 2 to show full hearts for each life.
 - `%hardcorelives_starting_lives%`: Players default starting number of lives. These are the `lives` defined in
   the `config.yml`
