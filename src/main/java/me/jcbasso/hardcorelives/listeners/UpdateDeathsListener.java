@@ -37,7 +37,7 @@ public class UpdateDeathsListener implements Listener {
         } else {
             // Can't revive anymore
             message = this.getLastDeathMessage(player);
-            this.handleLastDeath(player);
+            this.handleLastDeath(player, event);
         }
 
         // Strike lightning effect
@@ -49,7 +49,7 @@ public class UpdateDeathsListener implements Listener {
         }
 
         // Broadcast message
-        Bukkit.broadcast(message);
+        event.deathMessage(message);
     }
 
     private TextComponent getRevivingDeathMessage(Player player, Integer lives) {
@@ -66,19 +66,21 @@ public class UpdateDeathsListener implements Listener {
     private TextComponent getLastDeathMessage(Player player) {
         return Component.text()
                 .append(Component.text(player.getName(), NamedTextColor.RED))
-                .append(Component.text(" HA MUERTO POR ULTIMA VEZ", NamedTextColor.RED))
+                .append(Component.text(" ha muerto por ultima vez!", NamedTextColor.RED))
                 .build()
                 ;
     }
 
-    private void handleLastDeath(Player player) {
+    private void handleLastDeath(Player player, PlayerDeathEvent event) {
+        // Respawn
+        player.setBedSpawnLocation(player.getLocation(), true);
+        player.setGameMode(GameMode.SPECTATOR);
+        player.spigot().respawn();
+
         // Show Title
         Component mainTitle = Component.text("Has muerto!", NamedTextColor.RED);
-        Component subtitle = Component.text("");
+        Component subtitle = Component.text("ahora eres un espectador", NamedTextColor.GRAY);
         Title title = Title.title(mainTitle, subtitle);
         player.showTitle(title);
-
-        // Respawn
-        player.setGameMode(GameMode.SPECTATOR);
     }
 }
