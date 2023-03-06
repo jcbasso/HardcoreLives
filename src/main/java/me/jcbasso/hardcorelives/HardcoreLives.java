@@ -54,7 +54,7 @@ public final class HardcoreLives extends JavaPlugin {
     }
 
     private void setupListeners(LivesManager livesManager) {
-        getServer().getPluginManager().registerEvents(new UpdateDeathsListener(livesManager), this);
+        getServer().getPluginManager().registerEvents(new UpdateDeathsListener(this, livesManager), this);
     }
 
     private void setupPlaceholderAPI(LivesManager livesManager) {

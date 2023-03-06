@@ -5,20 +5,20 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.title.Title;
-import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
-import org.bukkit.Sound;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.plugin.Plugin;
 import org.jetbrains.annotations.NotNull;
 
 public class UpdateDeathsListener implements Listener {
     private final LivesManager livesManager;
+    private final Plugin plugin;
 
-    public UpdateDeathsListener(LivesManager livesManager) {
+    public UpdateDeathsListener(Plugin plugin, LivesManager livesManager) {
+        this.plugin = plugin;
         this.livesManager = livesManager;
     }
 
@@ -37,7 +37,7 @@ public class UpdateDeathsListener implements Listener {
         } else {
             // Can't revive anymore
             message = this.getLastDeathMessage(player);
-            this.handleLastDeath(player, event);
+            this.handleLastDeath(player);
         }
 
         // Strike lightning effect
@@ -55,8 +55,7 @@ public class UpdateDeathsListener implements Listener {
     private TextComponent getRevivingDeathMessage(Player player, Integer lives) {
         return Component.text()
                 .append(Component.text(player.getName(), NamedTextColor.RED))
-                .append(Component.text(" ha muerto.", NamedTextColor.GOLD))
-                .append(Component.text("\nLe quedan ", NamedTextColor.GOLD))
+                .append(Component.text(" ha muerto. Le quedan ", NamedTextColor.GOLD))
                 .append(Component.text(lives, NamedTextColor.RED))
                 .append(Component.text(" vidas.", NamedTextColor.GOLD))
                 .build()
@@ -71,11 +70,17 @@ public class UpdateDeathsListener implements Listener {
                 ;
     }
 
-    private void handleLastDeath(Player player, PlayerDeathEvent event) {
+    private void handleLastDeath(Player player) {
         // Respawn
-        player.setBedSpawnLocation(player.getLocation(), true);
+        Location respawnLocation = player.getLocation();
         player.setGameMode(GameMode.SPECTATOR);
-        player.spigot().respawn();
+        Bukkit.getScheduler().runTask(this.plugin,
+                () ->
+                {
+                    player.spigot().respawn();
+                    player.teleport(respawnLocation); // Using player.setBedSpawnLocation forced sometimes has obstruction problem
+                }
+        );
 
         // Show Title
         Component mainTitle = Component.text("Has muerto!", NamedTextColor.RED);
