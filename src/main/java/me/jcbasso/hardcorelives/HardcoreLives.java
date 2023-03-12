@@ -5,6 +5,7 @@ import me.jcbasso.hardcorelives.listeners.UpdateDeathsListener;
 import me.jcbasso.hardcorelives.lives.LivesManager;
 import me.jcbasso.hardcorelives.placeholderapi.LivesPlaceholderAPI;
 import me.jcbasso.hardcorelives.scoreboard.LivesScoreboardManager;
+import me.jcbasso.hardcorelives.tasks.SendActionBars;
 import me.jcbasso.hardcorelives.tasks.UpdateScoreboards;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -31,7 +32,7 @@ public final class HardcoreLives extends JavaPlugin {
         // Scoreboard
         LivesScoreboardManager livesScoreboardManager = setupLivesScorer(livesManager);
         // Tasks
-        setupTasks(livesScoreboardManager);
+        setupTasks(livesScoreboardManager, livesManager, config);
     }
 
     private FileConfiguration setupConfigFile() {
@@ -49,8 +50,11 @@ public final class HardcoreLives extends JavaPlugin {
         return new LivesScoreboardManager(scoreboardManager, livesManager);
     }
 
-    private void setupTasks(LivesScoreboardManager livesScoreboardManager) {
+    private void setupTasks(LivesScoreboardManager livesScoreboardManager, LivesManager livesManager, FileConfiguration config) {
         new UpdateScoreboards(livesScoreboardManager).runTaskTimer(this, 0L, 40L);
+
+        if (config.get("actionbar") == null) Bukkit.getLogger().severe("Missing 'actionbar' definition on config.yml");
+        else if ((boolean) config.get("actionbar")) new SendActionBars(livesManager).runTaskTimer(this, 0L, 10L);
     }
 
     private void setupListeners(LivesManager livesManager) {

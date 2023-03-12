@@ -1,1 +1,3 @@
 lives: 3
+actionbar: false # Resource pack needed to display the actionbar correctly
+hearts_color: red # action bar hearts color. Options: red/gold
