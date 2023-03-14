@@ -1,3 +1,12 @@
+# Language used on messages. Find all options or override them on resources/messages*.properties
+locale: en-US
+# Starting lives for new players
 lives: 3
-actionbar: false # Resource pack needed to display the actionbar correctly
-hearts_color: red # action bar hearts color. Options: red/gold
+
+# Action Bar that shows hearts left.
+# Requirements:
+#   * Hearts resource pack.
+actionbar:
+  enabled: false
+  hearts_color: red # Hearts colors. Options: red/gold.
+  show_empty: true # Show empty lost hearts.

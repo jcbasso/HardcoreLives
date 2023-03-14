@@ -1,17 +1,16 @@
 package me.jcbasso.hardcorelives;
 
+import me.jcbasso.hardcorelives.actionbar.ActionbarManager;
+import me.jcbasso.hardcorelives.actionbar.SendActionBars;
 import me.jcbasso.hardcorelives.commands.CommandManager;
+import me.jcbasso.hardcorelives.i18n.Messages;
 import me.jcbasso.hardcorelives.listeners.UpdateDeathsListener;
 import me.jcbasso.hardcorelives.lives.LivesManager;
 import me.jcbasso.hardcorelives.placeholderapi.LivesPlaceholderAPI;
-import me.jcbasso.hardcorelives.scoreboard.LivesScoreboardManager;
-import me.jcbasso.hardcorelives.tasks.SendActionBars;
-import me.jcbasso.hardcorelives.tasks.UpdateScoreboards;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scoreboard.ScoreboardManager;
 
 import java.util.Objects;
 
@@ -19,52 +18,59 @@ public final class HardcoreLives extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        // Config
-        FileConfiguration config = setupConfigFile();
+        // Resources
+        saveDefaultConfig();
+        FileConfiguration config = getConfig();
+        saveMessages();
+        getMessages();
+        Messages messages = new Messages(config, this);
         // Lives Manager
         LivesManager livesManager = new LivesManager(this, config);
         // Commands
-        setupCommands(livesManager);
+        setupCommands(livesManager, messages);
         // Listeners
-        setupListeners(livesManager);
+        setupListeners(livesManager, messages);
         // PlacerHolderAPI
         setupPlaceholderAPI(livesManager);
-        // Scoreboard
-        LivesScoreboardManager livesScoreboardManager = setupLivesScorer(livesManager);
-        // Tasks
-        setupTasks(livesScoreboardManager, livesManager, config);
+        // Action Bar
+        setupActionBar(livesManager, config);
     }
 
-    private FileConfiguration setupConfigFile() {
-        saveDefaultConfig();
-        return getConfig();
+    private void setupCommands(LivesManager livesManager, Messages messages) {
+        CommandManager commandManager = new CommandManager("hcl", livesManager, messages);
+        Objects.requireNonNull(getCommand(commandManager.getRootCommand())).setExecutor(commandManager);
     }
 
-    private void setupCommands(LivesManager livesManager) {
-        CommandManager commandManager = new CommandManager(livesManager, "hcl");
-        Objects.requireNonNull(getCommand(commandManager.rootCommand)).setExecutor(commandManager);
-    }
-
-    private LivesScoreboardManager setupLivesScorer(LivesManager livesManager) {
-        ScoreboardManager scoreboardManager = Bukkit.getScoreboardManager();
-        return new LivesScoreboardManager(scoreboardManager, livesManager);
-    }
-
-    private void setupTasks(LivesScoreboardManager livesScoreboardManager, LivesManager livesManager, FileConfiguration config) {
-        new UpdateScoreboards(livesScoreboardManager).runTaskTimer(this, 0L, 40L);
-
-        if (config.get("actionbar") == null) Bukkit.getLogger().severe("Missing 'actionbar' definition on config.yml");
-        else if ((boolean) config.get("actionbar")) new SendActionBars(livesManager).runTaskTimer(this, 0L, 10L);
-    }
-
-    private void setupListeners(LivesManager livesManager) {
-        getServer().getPluginManager().registerEvents(new UpdateDeathsListener(livesManager), this);
+    private void setupListeners(LivesManager livesManager, Messages messages) {
+        getServer().getPluginManager().registerEvents(new UpdateDeathsListener(this, livesManager, messages), this);
     }
 
     private void setupPlaceholderAPI(LivesManager livesManager) {
         Plugin placeholderapi = Bukkit.getPluginManager().getPlugin("PlaceholderAPI");
         if (placeholderapi != null) {
             new LivesPlaceholderAPI(livesManager).register();
+        }
+    }
+
+    private void setupActionBar(LivesManager livesManager, FileConfiguration config) {
+        ActionbarManager actionbarManager = new ActionbarManager(config, livesManager);
+
+        if (config.getBoolean("actionbar.enabled", false)) {
+            new SendActionBars(actionbarManager).runTaskTimer(this, 0L, 10L);
+        }
+    }
+
+    private void saveMessages() {
+        String[] messagesFiles = {"messages.properties", "messages_es.properties"};
+        for (String messagesFile : messagesFiles) {
+            saveResource(messagesFile, false);
+        }
+    }
+
+    private void getMessages() {
+        String[] messagesFiles = {"messages.properties", "messages_es.properties"};
+        for (String messagesFile : messagesFiles) {
+            getResource(messagesFile);
         }
     }
 }
